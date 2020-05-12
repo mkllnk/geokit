@@ -3,7 +3,6 @@ module Geokit
     class NetHttp
       def self.do_get(url)
         uri = URI(url)
-        Geokit::Geocoders.useragent ? headers = {'User-Agent' => Geokit::Geocoders.useragent} : headers = {} 
         req = Net::HTTP::Get.new(uri.request_uri, headers)
         req.basic_auth(uri.user, uri.password) if uri.userinfo
         net_http_args = [uri.host, uri.port]
@@ -24,6 +23,14 @@ module Geokit
 
       def self.success?(response)
         response.is_a?(Net::HTTPSuccess)
+      end
+
+      def self.headers
+        if Geokit::Geocoders.useragent
+          {'User-Agent' => Geokit::Geocoders.useragent}
+        else
+          {}
+        end
       end
     end
   end
