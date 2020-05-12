@@ -7,6 +7,14 @@ module Geokit
         do_http(req, uri)
       end
 
+      def self.do_post(url, payload:)
+        uri = URI(url)
+        req = Net::HTTP::Post.new(uri.request_uri, headers)
+        req.content_type = "application/json"
+        req.body = payload.to_json
+        do_http(req, uri)
+      end
+
       def self.do_http(req, uri)
         req.basic_auth(uri.user, uri.password) if uri.userinfo
         net_http_args = [uri.host, uri.port]
