@@ -42,4 +42,14 @@ class NetAdapterTest < Test::Unit::TestCase #:nodoc: all
     Typhoeus::Config.cache = nil
     Geokit::Geocoders.net_adapter = old_adapter
   end
+
+  def test_post
+    old_adapter = Geokit::Geocoders.net_adapter
+    Geokit::Geocoders.net_adapter = Geokit::NetAdapter::NetHttp
+    success = MockSuccess.new
+    success.expects(:body).returns(RESULT)
+    Geokit::NetAdapter::NetHttp.expects(:do_get).with(@url).returns(success)
+    assert_equal RESULT_HASH, Geokit::Geocoders::CachedGeocoder.process(:json, @url)
+    Geokit::Geocoders.net_adapter = old_adapter
+  end
 end
